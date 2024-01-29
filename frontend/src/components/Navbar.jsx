@@ -13,11 +13,34 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import { useNavigate } from 'react-router-dom'
+import { userState } from '../store/user'
+import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
+
 
 const Navbar = () => {
+
+  var isSignedIn = false;
+  const token = localStorage.getItem("token");
+  const [userData, setUserData] = useRecoilState(userState);
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/user'); // Replace with your actual API endpoint
+      setUserData(response.data);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
+
+
+  if(token){
+    isSignedIn = true;
+    fetchUserData();
+  }
+
+
+
   const navigate= useNavigate();
   //To Change the Navbar with sign in or not
-  var isSignedIn = true;
   const [isClicked, setIsClicked] = useState(false);
   //To Open or close dropdown using hamburger
   const handleHamClick = () => {
@@ -40,7 +63,10 @@ const Navbar = () => {
   }
   //To change the value in badge
   const [value, setValue] = useState(10);
-  
+  //To work on length of content on notification
+  var myString = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500";
+  var truncString = myString.substring(0, 50) + '...';
+
 
   return (
     <>
@@ -49,23 +75,10 @@ const Navbar = () => {
         {
           (isSignedIn) ? (<><div className='hidden sm:flex justify-center items-center space-x-4 mr-5'>
 
-            <NavLink to='/createPost'><button className="bg-[#6246ea] cursor-pointer hover:bg-blue-700 text-white font-bold  px-4 h-[2.5rem] rounded">Create Post</button></NavLink>
-            <NavLink to='/'><button className="bg-[#6246ea] cursor-pointer hover:bg-blue-700 text-white font-bold  px-4 h-[2.5rem] rounded">Posts</button></NavLink>
+            <NavLink to='/createPost'><button class="bg-[#6246ea] cursor-pointer hover:bg-blue-700 text-white font-bold  px-4 h-[2.5rem] rounded">Create Post</button></NavLink>
+            <NavLink to='/'><button class="bg-[#6246ea] cursor-pointer hover:bg-blue-700 text-white font-bold  px-4 h-[2.5rem] rounded">Posts</button></NavLink>
 
             <div>
-              <Button
-                id="basic-button"
-                aria-controls={open ? 'basic-menu' : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? 'true' : undefined}
-                onClick={handleClick}
-              >
-                <Badge badgeContent={value} color="secondary">
-                  {
-                    (!isFilled) ? (<NotificationsNoneIcon fontSize='large' className='cursor-pointer' color="action" onClick={handleColor} />) : (<NotificationsIcon fontSize='large' className='cursor-pointer' color="action" onClick={handleColor} />)
-                  }
-                </Badge>
-              </Button>
               <Menu
                 id="basic-menu"
                 anchorEl={anchorEl}
@@ -87,7 +100,7 @@ const Navbar = () => {
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
               >
-                <Avatar src={heroImage} />
+                <Avatar src={userData.media} />
               </Button>
               <Menu
                 id="basic-menu"
@@ -98,8 +111,15 @@ const Navbar = () => {
                   'aria-labelledby': 'basic-button',
                 }}
               >
-                <MenuItem onClick={() => {navigate('/profile')}}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>Logout</MenuItem>
+                <MenuItem onClick={() => {navigate('/profile');handleClose}}>Profile</MenuItem>
+                <MenuItem onClick={
+                  () => {
+                    localStorage.removeItem("token");
+                    navigate('/');
+                    handleClose;
+                  }
+
+                }>Logout</MenuItem>
               </Menu>
             </div>
           </div>
@@ -118,15 +138,15 @@ const Navbar = () => {
       {
         (isClicked) ? (
           <div className='flex flex-col  w-fit bg-transparent items-right space-y-4 mr-5 my-3 sm:hidden'>
-            <NavLink to='/createPost'><button className=" text-black font-semibold text-left text-xl px-4 " onClick={handleHamClick}>Create Post</button></NavLink>
-            <NavLink to='/posts'><button className="text-black font-semibold text-xl px-4" onClick={handleHamClick}>Posts</button></NavLink>
+            <NavLink to='/createPost'><button class=" text-black font-semibold text-left text-xl px-4 " onClick={handleHamClick}>Create Post</button></NavLink>
+            <NavLink to='/posts'><button class="text-black font-semibold text-xl px-4" onClick={handleHamClick}>Posts</button></NavLink>
             <NavLink to='/profile'><div>
               <PermIdentityIcon className='ml-4' />
-              <button className="text-black font-semibold text-xl px-1" onClick={handleHamClick}>Profile</button>
+              <button class="text-black font-semibold text-xl px-1" onClick={handleHamClick}>Profile</button>
             </div></NavLink>
             <NavLink to='/signin'><div>
               <LogoutIcon className='ml-4' />
-              <button className="text-black font-semibold text-xl px-1" onClick={handleHamClick}>Sign Out</button>
+              <button class="text-black font-semibold text-xl px-1" onClick={handleHamClick}>Sign Out</button>
             </div></NavLink>
           </div>
         ) : (<></>)

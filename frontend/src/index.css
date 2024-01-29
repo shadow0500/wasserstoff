@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
+
+hr{
+    @apply border-b-[0px] border-gray-600 w-full flex-wrap 
+}
+
+.btn{
+    @apply text-white transition ease-in-out delay-150 bg-[#6246ea]  hover:scale-105 hover:bg-[#b922e3] duration-300 font-medium rounded-lg px-5 py-2.5 text-center text-xl mx-auto mb-2 w-fit
+}
+
+.navbar-btn{
+    @apply  cursor-pointer transition ease-in-out delay-75 bg-[#6246ea]  hover:scale-105 hover:bg-[#b922e3] duration-300 text-white font-bold  px-[10px] h-[2.5rem] rounded
+}
+
+.back-ground-to-bottom{
+    @apply bg-gradient-to-b from-[#151519] to-[#183081]
+}
+
+.back-ground-to-top{
+    @apply bg-gradient-to-b from-[#183081] to-[#151519]
+}
+
+.profile-border{
+    @apply text-xl border-b-[0px] border-gray-600 p-3 flex-wrap
+}
+
+.modal-wrapper{
+    position: fixed;
+    inset: 0;
+    background-color: rgba(189, 189, 189, 0.9)
+}
+
+
 @tailwind utilities;

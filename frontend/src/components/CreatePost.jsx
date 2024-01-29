@@ -1,9 +1,22 @@
-
+import React from 'react';
+// import FileInputButton from '../utilities/FileInputButton';
+// import galleryIcon from '../Assets/galleryIcon.png'
+// import AddIcon from '../Assets/AddIcon.jpg'
+import { useNavigate } from 'react-router-dom';
 const CreatePost = () => {
-//   const handleFileSelect = (files) => {
-//     // Process the selected files here
-//     console.log('Selected files:', files);
-//   };
+
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  if(!token){
+    navigate('/signin');
+    return;
+  }
+
+
+  const handleFileSelect = (files) => {
+    // Process the selected files here
+    console.log('Selected files:', files);
+  };
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col items-center justify-center">
       <div className='bg-white w-full mx-3 md:w-3/5  p-8 rounded-lg shadow'>
@@ -51,7 +64,7 @@ const CreatePost = () => {
               {/* <img src={AddIcon} width={50} alt="" className='mx-auto' /> */}
               <p className="text-gray-500 text-sm text-center mb-1">Add your images here</p>
               <p className="text-gray-500 text-xs text-center">Support .png .jpg .jpeg</p>
-              <input className='flex justify-center items-center my-5 cursor-pointer' type="file" />
+              <input className='flex justify-center items-center my-5 cursor-pointer' type="file" multiple='true' />
               
             {/* </div> */}
 

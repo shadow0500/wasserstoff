@@ -3,43 +3,16 @@ import { NavLink } from 'react-router-dom';
 import axios from 'axios';
 import Post from './Post';
 
-interface UserData {
-  name: string;
-  bannerImage: string;
-  profileImage: string;
-  posts: Array<PostData>;
-}
+import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
+import { userState } from '../store/user';
+import { postsState } from '../store/posts';
 
-interface PostData {
-  id: number;
-  userImageUrl: string;
-  imageUrl: string;
-  description: string;
-  username: string;
-  datePosted: string;
-}
+const ProfilePage = () => {
 
-const ProfilePage: React.FC = () => {
-  const [userData, setUserData] = useState<UserData>({
-    name: '',
-    bannerImage: 'url-to-banner-image', // Replace with actual URL or import the image
-    profileImage: 'url-to-profile-image', // Replace with actual URL or import the image
-    posts: [],
-  });
 
-  useEffect(() => {
-    // Fetch user data and posts when the component mounts
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get<UserData>('http://localhost:3000/user'); // Replace with your actual API endpoint
-        setUserData(response.data);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      }
-    };
+  const userData = useRecoilValue(userState);
+  const posts = useRecoilValue(postsState);
 
-    fetchUserData();
-  }, []); // Empty dependency array ensures the effect runs only once on mount
 
   return (
     <>
@@ -58,17 +31,18 @@ const ProfilePage: React.FC = () => {
           <div className="mt-4">
             <h2 className="text-2xl font-bold mb-2 text-black">Your Posts</h2>
             <ul>
-              {userData.posts.map((post) => (
-                <li key={post.id} className="mb-2">
+              {posts.map((post) => (
+                (post.user_id == userData.user_id) && 
+                (<li key={post.id} className="mb-2 ">
                   {/* Display post content */}
                   <Post
-                    userImageUrl={post.userImageUrl} 
+                    userImage={post.userImageUrl} 
                     imageUrl={post.imageUrl}
                     description={post.description}
                     username={post.username}
                     datePosted={post.datePosted}
                   />
-                </li>
+                </li>)
               ))}
             </ul>
           </div>
